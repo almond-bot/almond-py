@@ -5,7 +5,11 @@ description = "The best way to control Almond Bot"
 readme = "README.md"
 requires-python = ">=3.12"
 
-
 dependencies = [
     "aiohttp>=3.11.16",
+]
+
+[project.optional-dependencies]
+dev = [
+    "ipython",
 ]

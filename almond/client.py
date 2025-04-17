@@ -1,6 +1,11 @@
 import asyncio
 from typing import Any, Dict, List, Optional
 import aiohttp
+from aiohttp import WSMsgType, ClientConnectionError
+import logging
+
+
+logger = logging.getLogger(__name__)
 
 class AlmondBotClient:
     """Client for interacting with the AlmondBot WebSocket server.
@@ -9,7 +14,7 @@ class AlmondBotClient:
     through a WebSocket connection using JSON-RPC 2.0 protocol.
     """
     
-    def __init__(self, host: str = "localhost", port: int = 8000):
+    def __init__(self, host: str = "almond-jetson.local", port: int = 8000):
         """Initialize the AlmondBot client.
         
         Args:
@@ -23,7 +28,7 @@ class AlmondBotClient:
 
     async def connect(self) -> None:
         """Establish a WebSocket connection to the AlmondBot server."""
-        self.session = aiohttp.ClientSession()
+        self.session = aiohttp.ClientSession(timeout=aiohttp.ClientTimeout(total=None)) # keep connection alive
         self.ws = await self.session.ws_connect(self.uri)
 
     async def disconnect(self) -> None:
@@ -46,11 +51,11 @@ class AlmondBotClient:
             The result of the RPC call
             
         Raises:
-            ConnectionError: If not connected to the server
             Exception: If the server returns an error response
         """
-        if not self.ws:
-            raise ConnectionError("Not connected to server")
+        if not self.ws or self.ws.closed:
+            logger.warning("WebSocket connection is closed. Attempting to connect...")
+            await self.connect()
 
         self.request_id += 1
         request = {
@@ -60,8 +65,21 @@ class AlmondBotClient:
             "id": self.request_id
         }
 
-        await self.ws.send_json(request)
-        response = await self.ws.receive_json()
+        try:
+            await self.ws.send_json(request)
+            msg = await self.ws.receive()
+            if msg.type == WSMsgType.TEXT:
+                response = msg.json()
+            elif msg.type == WSMsgType.CLOSE or msg.type == WSMsgType.CLOSING:
+                logger.warning("WebSocket connection closed on send. Trying again.")
+                await self.connect()
+                return await self._call(method, **params)
+            else:
+                raise ClientConnectionError(f"Unexpected WebSocket message type: {msg.type}")
+
+        except Exception as e:
+            print(f"Error sending request: {e}")
+            raise e
 
         if "error" in response:
             raise Exception(f"RPC Error: {response['error']['message']}")
@@ -258,6 +276,3 @@ async def main():
         
     finally:
         await client.disconnect()
-
-if __name__ == "__main__":
-    asyncio.run(main()) 
