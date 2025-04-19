@@ -1,0 +1,14 @@
+{
+    "name": "Almond",
+    "logo": {
+        "light": "/assets/almond.svg",
+        "dark": "/assets/almond.svg",
+        "href": "https://almondbot.com"
+    },
+    "favicon": "/assets/favicon.ico",
+    "colors": {
+        "primary": "#EFF483",
+        "light": "#FFFFFF",
+        "dark": "#121212"
+    }
+}
