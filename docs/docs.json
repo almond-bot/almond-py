@@ -10,5 +10,6 @@
         "primary": "#EFF483",
         "light": "#FFFFFF",
         "dark": "#121212"
-    }
+    },
+    "theme": "mint"
 }
