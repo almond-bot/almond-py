@@ -30,6 +30,7 @@ def main():
     client = AlmondBotClient()
 
     banner = """
+    
 AlmondBot Python Shell
 =====================
 Available variables:

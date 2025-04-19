@@ -11,5 +11,6 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = [
-    "ipython",
+    "ipython>=8.0.0",
+    "pynput",
 ]

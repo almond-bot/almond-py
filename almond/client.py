@@ -86,6 +86,7 @@ class AlmondBotClient:
         return response.get("result")
 
     # Robot Mode Configuration Methods
+
     async def set_drag_mode(self, is_enabled: bool) -> None:
         """Enable or disable drag mode on the robot arm.
         
@@ -93,6 +94,7 @@ class AlmondBotClient:
             is_enabled: True to enable drag mode, False to disable
         """
         await self._call("set_drag_mode", is_enabled=is_enabled)
+    
 
     async def set_collision_sensitivity(self, percent: int) -> None:
         """Set the collision sensitivity of the robot arm.
@@ -110,6 +112,8 @@ class AlmondBotClient:
         """
         await self._call("set_speed", percent=percent)
 
+    # End of Robot Mode Configuration Methods
+
     # Read Robot State Methods
     async def get_joint_angles(self) -> List[float]:
         """Get the current joint angles of the robot arm.
@@ -119,30 +123,39 @@ class AlmondBotClient:
         """
         return await self._call("get_joint_angles")
 
-    async def get_tool_transform(self) -> Dict[str, Any]:
-        """Get the current tool transform of the robot arm.
+    async def get_tool_pose(self) -> Dict[str, Any]:
+        """Get the current tool pose of the robot arm.
         
         Returns:
-            Dictionary containing the tool transform matrix
+            Dictionary containing the tool pose
         """
-        return await self._call("get_tool_transform")
+        return await self._call("get_tool_pose")
 
-    # Tool Transform Control Methods
-    async def set_tool_transform(self, transform: Dict[str, Any]) -> None:
-        """Set the tool transform of the robot arm.
+    # Tool Control Methods
+    async def set_tool_pose(self, pose: List[float]) -> None:
+        """Set the tool pose of the robot arm.
         
         Args:
-            transform: Dictionary containing the tool transform matrix
+            pose: List of floats containing the tool pose. x, y, z, roll, pitch, yaw
         """
-        await self._call("set_tool_transform", transform=transform)
+        await self._call("set_tool_pose", pose=pose)
 
-    async def set_tool_transform_offset(self, transform_offset: Dict[str, Any]) -> None:
-        """Set the tool transform offset of the robot arm.
+    async def set_tool_pose_offset(self, pose_offset: List[float]) -> None:
+        """Set the tool pose offset of the robot arm.
         
         Args:
-            transform_offset: Dictionary containing the tool transform offset matrix
+            pose_offset: List of floats containing the tool pose offset. x, y, z, roll, pitch, yaw
         """
-        await self._call("set_tool_transform_offset", transform_offset=transform_offset)
+        await self._call("set_tool_pose_offset", pose_offset=pose_offset)
+    
+    
+    async def set_joint_angles(self, angles: List[float]) -> None:
+        """Set the joint angles of the robot arm.
+        
+        Args:
+            angles: List of floats containing the joint angles.
+        """
+        await self._call("set_joint_angles", angles=angles)
 
     # Gripper Control Methods
     async def open_tool(self) -> None:
@@ -171,65 +184,75 @@ class AlmondBotClient:
         """
         return await self._call("detect_april_tags")
 
-    async def align_with_apriltag(self, x: float, y: float, z: float, id: int) -> None:
-        """Align the robot with a specific AprilTag.
+    async def align_with_apriltag(self, id: int, x_offset: float = 0, y_offset: float = 0, z_offset: float = 0) -> None:
+        """Align the robot with a specific AprilTag. If x, y, z are not provided, the robot will center on the AprilTag.
         
         Args:
-            x: Target x position
-            y: Target y position
-            z: Target z position
             id: AprilTag ID to align with
+            x_offset: Target x position offset, mm
+            y_offset: Target y position offset, mm
+            z_offset: Target z position offset, mm
         """
-        await self._call("align_with_apriltag", x=x, y=y, z=z, id=id)
+        await self._call("align_with_apriltag", x_offset=x_offset, y_offset=y_offset, z_offset=z_offset, id=id)
 
     async def move_relative_to_april_tag(self, tag_id: int, offset: Dict[str, float]) -> None:
         """Move the robot relative to a detected AprilTag.
         
         Args:
             tag_id: ID of the AprilTag to move relative to
-            offset: Dictionary containing x, y, z offsets
+            offset: Dictionary containing x, y, z, roll, pitch, yaw offsets
         """
         await self._call("move_relative_to_april_tag", tag_id=tag_id, offset=offset)
 
-    # AI Episode Methods
-    async def record_episode(self, timer: float, task_name: str, control_mode: str) -> None:
+    # AI Methods
+    async def record_episode(self, task_name: str, duration_seconds: float, control_mode: str) -> None:
         """Record a robot episode for training.
         
         Args:
-            timer: Duration of the episode in seconds
             task_name: Name of the task being recorded
+            duration_seconds: Duration of the episode in seconds
             control_mode: Control mode used during recording
         """
-        await self._call("record_episode", timer=timer, task_name=task_name, control_mode=control_mode)
+        await self._call("record_episode", task_name=task_name, duration_seconds=duration_seconds, control_mode=control_mode)
 
-    async def replay_episode(self, task_name: str, number: int) -> None:
+    async def replay_episode(self, task_name: str, id: str) -> None:
         """Replay a recorded episode.
         
         Args:
             task_name: Name of the task to replay
-            number: Episode number to replay
+            id: Episode id to replay
         """
-        await self._call("replay_episode", task_name=task_name, number=number)
+        await self._call("replay_episode", task_name=task_name, id=id)
+    
+    async def delete_episode(self, task_name: str, id: str) -> None:
+        """Delete a recorded episode.
+        
+        Args:
+            task_name: Name of the task
+            id: Episode id to delete
+        """
+        await self._call("delete_episode", task_name=task_name, id=id)
 
-    async def list_episode_metadata(self, task_name: str) -> List[Dict[str, Any]]:
+    async def list_episodes(self, task_name: str) -> List[Dict[str, Any]]:
         """Get metadata for recorded episodes of a task.
         
         Args:
             task_name: Name of the task
             
         Returns:
-            List of episode metadata dictionaries
+            List recorded training episodes for a task
         """
-        return await self._call("list_episode_metadata", task_name=task_name)
+        return await self._call("list_episodes", task_name=task_name)
 
-    async def train(self, task_name: str, model: str = '') -> None:
+    async def train_task(self, task_name: str, training_name: str, model: str = '') -> None:
         """Train a model on recorded episodes.
         
         Args:
             task_name: Name of the task to train on
+            training_name: Name to give the training
             model: Optional model name to use for training
         """
-        await self._call("train", task_name=task_name, model=model)
+        await self._call("train", task_name=task_name, training_name=training_name, model=model)
 
     async def list_trainings(self) -> List[Dict[str, Any]]:
         """Get list of available trained models.
@@ -239,13 +262,14 @@ class AlmondBotClient:
         """
         return await self._call("list_trainings")
 
-    async def run_model(self, model: str) -> None:
+    async def run_task(self, task_name: str, training_name: str = '') -> None:
         """Run a trained model on the robot.
         
         Args:
-            model: Name of the model to run
+            task_name: Name of the task to run
+            training_name: Name of the training to use. If not provided, the latest training will be used.
         """
-        await self._call("run_model", model=model)
+        await self._call("run_task", task_name=task_name, training_name=training_name)
 
     async def verify_scene(self, question: str) -> bool:
         """Verify the current scene matches expectations.
@@ -257,22 +281,3 @@ class AlmondBotClient:
             True if the scene matches expectations, False otherwise
         """
         return await self._call("verify_scene", question=question)
-
-async def main():
-    """Example usage of the AlmondBot client."""
-    client = AlmondBotClient()
-    try:
-        await client.connect()
-        
-        # Example: Get joint angles
-        angles = await client.get_joint_angles()
-        print(f"Current joint angles: {angles}")
-        
-        # Example: Move to a position
-        await client.set_tool_transform({
-            "position": [0.1, 0.2, 0.3],
-            "rotation": [0, 0, 0]
-        })
-        
-    finally:
-        await client.disconnect()
