@@ -3,40 +3,89 @@
   "theme": "mint",
   "name": "Almond",
   "colors": {
-    "primary": "#EFF483",
+    "primary": "#CCAB00",
     "light": "#FFFFFF",
     "dark": "#121212"
   },
   "favicon": "/favicon.ico",
   "navigation": {
-    "tabs": [
-      {
-        "tab": "Guides",
-        "groups": [
+    "global": {
+      "anchors": [
+        {
+          "anchor": "Website",
+          "icon": "globe",
+          "href": "https://almondbot.com"
+        },
+        {
+          "anchor": "Join Slack",
+          "icon": "slack",
+          "href": "https://slack.com/almondbot"
+        },
+        {
+          "anchor": "Get Help",
+          "icon": "question",
+          "href": "mailto:support@almondbot.com"
+        }
+      ]
+    },
+    "groups": [
           {
             "group": "Get Started",
             "pages": [
               "introduction",
               "quickstart"
             ]
-          }
-        ]
-      },
-      {
-        "tab": "API Reference",
-        "groups": [
+          },
           {
-            "group": "Endpoint Examples",
+            "group": "Robot Basics",
             "pages": [
-              "api-reference/endpoint/get",
-              "api-reference/endpoint/create",
-              "api-reference/endpoint/delete",
-              "api-reference/endpoint/webhook"
+              "Configuration",
+              "Pose Control",
+              "Gripper Control"
+            ]
+          },
+          {
+            "group": "Tutorials",
+            "pages": [
+              "AI Training",
+              "April Tags"
+            ]
+          },
+          {
+            "group": "API Reference",
+            "pages": [
+              {
+                "group": "Python",
+                "pages": [
+                  "api-reference/python/connect",
+                  "api-reference/python/disconnect",
+                  "api-reference/python/set_drag_mode",
+                  "api-reference/python/set_collision_sensitivity",
+                  "api-reference/python/set_speed",
+                  "api-reference/python/get_joint_angles",
+                  "api-reference/python/get_tool_pose",
+                  "api-reference/python/set_tool_pose",
+                  "api-reference/python/set_tool_pose_offset",
+                  "api-reference/python/set_joint_angles",
+                  "api-reference/python/open_tool",
+                  "api-reference/python/close_tool",
+                  "api-reference/python/set_tool_stroke",
+                  "api-reference/python/detect_april_tags",
+                  "api-reference/python/align_with_apriltag",
+                  "api-reference/python/move_relative_to_april_tag",
+                  "api-reference/python/record_episode",
+                  "api-reference/python/replay_episode",
+                  "api-reference/python/delete_episode",
+                  "api-reference/python/list_episodes",
+                  "api-reference/python/train_task",
+                  "api-reference/python/list_trainings",
+                  "api-reference/python/run_task",
+                  "api-reference/python/verify_scene"
+                ]
+              }
             ]
           }
         ]
-      }
-    ]
   },
   "logo": {
     "light": "/logo/almond.svg",
@@ -45,15 +94,9 @@
   "navbar": {
     "primary": {
       "type": "button",
-      "label": "Website",
+      "label": "Order",
       "href": "https://almondbot.com"
-    },
-    "links": [
-      {
-        "label": "Support",
-        "href": "mailto:support@almondbot.com"
-      }
-    ]
+    }
   },
   "footer": {
     "socials": {

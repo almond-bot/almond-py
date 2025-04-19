@@ -1,0 +1,15 @@
+---
+title: set_tool_pose_offset
+---
+
+Set the tool pose offset of the robot arm.
+
+## Parameters
+
+- `pose_offset`: List of floats containing the tool pose offset. x, y, z, roll, pitch, yaw.
+
+## Example Usage
+
+```python
+await client.set_tool_pose_offset([0.01, 0.02, 0.03, 0, 0, 0])
+``` 

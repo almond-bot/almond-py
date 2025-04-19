@@ -1,0 +1,17 @@
+---
+title: record_episode
+---
+
+Record a robot episode for training.
+
+## Parameters
+
+- `task_name`: Name of the task being recorded.
+- `duration_seconds`: Duration of the episode in seconds.
+- `control_mode`: Control mode used during recording.
+
+## Example Usage
+
+```python
+await client.record_episode("pick_and_place", 60, "manual")
+``` 
