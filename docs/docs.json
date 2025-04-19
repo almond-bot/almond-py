@@ -36,22 +36,18 @@
           }
         ]
       }
-    ],
-    "global": {
-      "anchors": [
-        {
-          "anchor": "Website",
-          "href": "https://almondbot.com",
-          "icon": "laptop-minimal"
-        }
-      ]
-    }
+    ]
   },
   "logo": {
     "light": "/logo/almond.svg",
     "dark": "/logo/almond.svg"
   },
   "navbar": {
+    "primary": {
+      "type": "button",
+      "label": "Website",
+      "href": "https://almondbot.com"
+    },
     "links": [
       {
         "label": "Support",
