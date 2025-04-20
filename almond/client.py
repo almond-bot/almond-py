@@ -129,7 +129,17 @@ class AlmondBotClient:
             Dictionary containing the tool pose
         """
         return await self._call("get_tool_pose")
-
+    
+    async def teleop(self, pose_offset: list[float] = None, joint_angles: list[float] = None, tool_stroke: float = None) -> None:
+        """Teleop the robot arm. You can provide a pose offset, joint angles, or tool stroke to move the robot. You cannot provide a pose offset and joint angles at the same time.
+        
+        Args:
+            pose_offset: List of floats containing the tool pose offset. x, y, z, roll, pitch, yaw. Translation is in mm, rotation is in degrees.
+            joint_angles: List of floats containing the joint angles in degrees.
+            tool_stroke: The tool stroke as a percentage of the maximum stroke (0-100)
+        """
+        await self._call("teleop", pose_offset=pose_offset, joint_angles=joint_angles, tool_stroke=tool_stroke)
+    
     # Tool Control Methods
     async def set_tool_pose(self, pose: List[float]) -> None:
         """Set the tool pose of the robot arm.
