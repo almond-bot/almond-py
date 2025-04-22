@@ -23,7 +23,7 @@ class Pose:
     @staticmethod
     def from_dict(data: dict) -> 'Pose':
         return Pose(data['x'], data['y'], data['z'], data['roll'], data['pitch'], data['yaw'])
-        
+
 class Status:
     def __init__(self, mode: Mode, status: str, error_message: str = None):
         self.mode = mode
@@ -85,12 +85,13 @@ class AIModel(Enum):
 
 
 class TaskTraining:
-    def __init__(self, id: str, task_name: str, training_name: str, model: AIModel, training_episode_count: int, created_at: str):
+    def __init__(self, id: str, task_name: str, training_name: str, model: AIModel, training_episode_count: int, status: str, created_at: str):
         self.id = id
         self.task_name = task_name
         self.training_name = training_name
         self.model = model
         self.training_episode_count = training_episode_count
+        self.status = status
         self.created_at = created_at
 
     @staticmethod
