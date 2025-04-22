@@ -89,7 +89,7 @@ async def keyboard_control_loop(client: AlmondBotClient):
     previous_tool_stroke = 0
 
     last_toggle_time = 0
-    debounce_interval = 1.0  # 1 second debounce interval
+    debounce_interval = 0.5  # 1 second debounce interval
 
     suppress_terminal_input()
 
